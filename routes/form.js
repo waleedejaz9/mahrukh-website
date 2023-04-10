@@ -1,20 +1,21 @@
 import express from "express";
 import { Form } from "../models/forms.js";
 import { sendEmail } from "../utils/email.js";
-import Config from "../config.js";
+import { isAuthenticated } from "../middlewares/auth.js";
 const router = express.Router();
 
 // POST route for submitting a form
 router.post("/submit-form", async (req, res) => {
   try {
     const formData = req.body;
+    console.log(formData);
     const savedForm = await Form.submitForm(formData);
-    // if(savedForm){
+    if (savedForm) {
 
-    //     let response =
-    //     "<p>Mahrukh freelancing website: </p>" +    
-    //   await sendEmail("From mahrukh freelancing website", Config.TO, response);
-    // }
+      let response =
+        "<p>Mahrukh freelancing website: </p>"
+      await sendEmail(formData.subject, "waleedejaz9@gmail.com", "waleedejaz9@gmail.com", response);
+    }
     res
       .status(201)
       .json({ message: "Form submission successful.", formDetails: savedForm });
@@ -27,7 +28,7 @@ router.post("/submit-form", async (req, res) => {
 });
 
 // GET route for retrieving all forms
-router.get("/", async (req, res) => {
+router.get("/", isAuthenticated, async (req, res) => {
   try {
     const forms = await Form.getAllForms();
     res.json(forms);
@@ -40,7 +41,7 @@ router.get("/", async (req, res) => {
 });
 
 // DELETE route for deleting a form by ID
-router.delete("/forms/:formId", async (req, res) => {
+router.delete("/forms/:formId", isAuthenticated, async (req, res) => {
   try {
     const deletedForm = await Form.deleteFormById(req.params.formId);
     res.json(deletedForm);

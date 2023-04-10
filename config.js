@@ -13,6 +13,7 @@ export default {
   user: process.env.user,
   pass: process.env.pass,
   TO: process.env.TO,
+  jwtKey: process.env.JWT_SECRET_KEY,
   scheduleTime: process.env.scheduleTime,
   patternTime: process.env.patternTime,
 };
